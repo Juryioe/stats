@@ -5,36 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="styles.min.css">
-
-    <script src="js.js">
-
-    </script>
+    <script src="js.js"></script>
 </head>
 
 <body>
     <div class="container">
         <div class="time"></div>
         <div class="header">
-            <div class="header_item">
+            <div class="header_item green_color">
                 <div class="header_icon">
                     <img src="icons/house.svg" alt="">
                 </div>
-                <div id="DSCPartition_1_Partition_Armed_Status" class="header_icon_text"></div>
+                <div id="DSCPartition_1_Partition_Armed_Status" class="header_icon_text special"></div>
             </div>
-            <div class="header_item">
+            <div class="header_item green_color">
                 <div class="header_icon">
                     <img src="icons/window.svg" alt="">
                 </div>
-                <div class="header_icon_text red_color" id="DSCZone_3_Zone_Status"></div>
+                <div class="header_icon_text special" id="DSCZone_3_Zone_Status"></div>
             </div>
-            <div class="header_item">
+            <div class="header_item green_color">
                 <div class="header_icon">
                     <img src="icons/garage.svg" alt="">
                 </div>
-                <div class="header_icon_text " id="DSCZone_6_Zone_Status"></div>
+                <div class="header_icon_text special" id="DSCZone_6_Zone_Status"></div>
             </div>
             <div class="header_item">
                 <div class="header_icon">
@@ -46,55 +42,102 @@
                 <div class="header_icon">
                     <img src="icons/temp.svg" alt="">
                 </div>
-                <div class="header_icon_text"><span id="komfovent_panel_temp"></span><sup>c</sup></div>
+                <div class="header_icon_text">
+                    <span class="trend-ar" id="komfovent_panel_temp"></span>
+                    <sup>c</sup>
+                    <div class="trend"></div>
+                </div>
             </div>
         </div>
+
         <div class="wrap">
+
             <div class="main_item">
-                <div class="title">komfovent mode</div>
-                <div class="status" id="komfovent_mode"></div>
+                <div class="title">Komfovent mode</div>
+                <div class="status">
+                    <div class="stats" id="komfovent_mode"></div>
+                    <div class="trend"></div>
+                </div>
             </div>
+
             <div class="main_item">
                 <div class="title">Bedroom temperature</div>
-                <div class="status"><span id="xiaomi_A4C13815F71C_temperature"></span><sup>c</sup></div>
-
+                <div class="status">
+                    <div class="trend-ar" id="xiaomi_A4C13815F71C_temperature">
+                    </div><sup>c</sup>
+                    <div class="trend"></div>
+                </div>
             </div>
+
             <div class="main_item">
                 <div class="title">Komfovent panel humidity</div>
-                <div class="status" id="komfovent_panel_humidity"></div>
+                <div class="status">
+                    <div class="stats trend-ar" id="komfovent_panel_humidity"></div>
+                    <div class="trend"></div>
+                </div>
             </div>
+
             <div class="main_item">
                 <div class="title">Nibe degree minutes</div>
                 <div class="status">
-                    <div class="stats" id="nibe_degree_minutes"></div>
+                    <div class="stats trend-ar" id="nibe_degree_minutes"></div>
+                    <div class="trend"></div>
+                </div>
+            </div>
+
+            <div class="main_item">
+                <div class="title">Nibe outdoor temp</div>
+                <div class="status">
+                    <div class="trend-ar" id="nibe_outdoor_temp"></div><sup>c</sup>
+                    <div class="trend"></div>
+                </div>
+
+            </div>
+
+            <div class="main_item">
+                <div class="title">Powermeter smartmeter</div>
+                <div class="status">
+                    <div class="stats trend-ar" id="powermeter_smartmeter_poweractive_mean_sum_f64"></div>
+                    <div class="trend"></div>
+                </div>
+            </div>
+
+            <div class="main_item">
+                <div class="title">Fronius poweractive</div>
+                <div class="status">
+                    <div class="stats trend-ar" id="fronius_acbridge_poweractive_sum_mean_f32"></div>
                     <div class="trend">
                     </div>
                 </div>
             </div>
-            <div class="main_item">
-                <div class="title">Nibe outdoor temp</div>
-                <div class="status"><span id="nibe_outdoor_temp"></span><sup>c</sup></div>
-            </div>
-            <div class="main_item">
-                <div class="title">Powermeter smartmeter</div>
-                <div class="status" id="powermeter_smartmeter_poweractive_mean_sum_f64"></div>
-            </div>
-            <div class="main_item">
-                <div class="title">Fronius poweractive</div>
-                <div class="status" id="fronius_acbridge_poweractive_sum_mean_f32"></div>
-            </div>
+
             <div class="main_item">
                 <div class="title">Generated power</div>
-                <div class="status" id="generated_power"></div>
+                <div class="status">
+                    <div class="stats trend-ar" id="generated_power"></div>
+                    <div class="trend">
+                    </div>
+                </div>
             </div>
+
             <div class="main_item">
                 <div class="title">Power to network</div>
-                <div class="status" id="power_to_network"></div>
+                <div class="status">
+                    <div class="stats trend-ar" id="power_to_network"></div>
+                    <div class="trend">
+                    </div>
+                </div>
             </div>
+
             <div class="main_item">
                 <div class="title">Power from network</div>
-                <div class="status" id="power_from_network"></div>
+                <div class="status">
+                    <div class="stats trend-ar" id="power_from_network"></div>
+                    <div class="trend">
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </body>

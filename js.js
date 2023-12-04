@@ -1,93 +1,130 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const refresh = 5000;
-  fetchStats();
-  timer();
-  setInterval(fetchStats, refresh);
+const getLocalStorage = (key) => {
+  const value = localStorage.getItem(key)
+  return JSON.parse(value)
+}
 
-  function timer() {
-    let i = refresh;
-    const intervalId = setInterval(() => {
-      const timeBlock = document.querySelector(".time");
-      timeBlock.style.display = "block";
-      timeBlock.style.transition = "all 3s";
-      i -= 1000;
-      timeBlock.innerHTML = `Update after 
-      ${i.toString().slice(0, -3)} seconds`;
-      if (i === 0) {
-        clearInterval(intervalId);
-        document.querySelector(
-          ".time"
-        ).innerHTML = `<img src="ref.gif" alt="" width="20px">
-        `;
+const setLocalStorage = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value))
+}
 
-        timer();
-      }
-    }, 1000);
+function handle_komfovent_mode(block, key, val) {
+  let textVal = 'Off'
+  switch (val) {
+    case 0:
+      textVal = 'Off'
+      break
+    case 1:
+      textVal = 'Minimum'
+      break
+    case 2:
+      textVal = 'Normal'
+      break
+    case 3:
+      textVal = 'Intense'
+      break
+    case 4:
+      textVal = 'Maximum'
+      break
+    default:
+      textVal = 'Unknown'
+      break
   }
 
+  block.textContent = textVal
+  return textVal
+}
+
+function handle_dsc_zones(block, key, val) {
+  val == 1
+    ? block.classList.add('red_color')
+    : block.classList.remove('red_color')
+  block.textContent = val == 0 ? 'Closed' : 'Open'
+}
+
+function handle_dsc_status(block, key, val) {
+  val == 0
+    ? block.classList.add('red_color')
+    : block.classList.remove('red_color')
+  block.textContent = val == 1 ? 'Secure' : 'Open'
+}
+
+function getBlockIdByKey(key) {
+  const keyMap = {
+    //'xiaomi_A4C13815F71C_temperature': 'bedroom_temperature',
+    xiaomi_A4C138E591C5_temperature: 'livingroom_temperature',
+  }
+
+  return typeof keyMap[key] != 'undefined' ? keyMap[key] : key
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const refresh = 10000
+  fetchStats()
+  setInterval(fetchStats, refresh)
+  document.querySelector('.time').onclick = fetchStats
+
+  let objektas = {}
   function fetchStats() {
-    fetch("http://server.digroupinc.com/s/")
+    // fetch("http://localhost:8080/json.php")
+    fetch('http://localhost:8080/proxy.php')
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
-        return response.json();
+        return response.json()
       })
       .then((json) => {
-        // const forTrends = [
-        //   json.nibe_degree_minutes,
-        //   json.xiaomi_A4C13815F71C_temperature,
-        // ];git
-        trendCheck();
-        function trendCheck() {
-          const dataNew = Number.parseFloat(json.nibe_degree_minutes);
-          const dataOld = Number.parseFloat(
-            document.getElementById("nibe_degree_minutes").textContent
-          );
-          const trend = document.querySelector(".trend");
-          trend.classList.toggle("up", dataNew > dataOld);
-          trend.classList.toggle("down", dataNew <= dataOld);
-        }
+        const timeBlock = document.querySelector('.time')
+        timeBlock.innerText =
+          'Last updated ' + json.timestamp + ' (TODO: to seconds)'
+        timeBlock.style.display = 'block'
+        timeBlock.style.transition = 'all 3s'
+        for (const key in json.stats) {
+          const block = document.getElementById(getBlockIdByKey(key))
+          if (!block) continue
 
-        const statusFunctions = {
-          DSCPartition_1_Partition_Armed_Status: (section, value) => {
-            section.classList.add(value === "1" ? "green_color" : "red_color");
-            section.textContent = value === "1" ? "Armed" : "To arm";
-          },
-          DSCZone_3_Zone_Status: (section, value) => {
-            section.classList.add(value === "1" ? "red_color" : "green_color");
-            section.textContent = value === "1" ? "Open" : "Closed";
-          },
-          DSCZone_6_Zone_Status: (section, value) => {
-            section.classList.add(value === "1" ? "red_color" : "green_color");
-            section.textContent = value === "1" ? "Open" : "Closed";
-          },
-        };
+          switch (key) {
+            case 'komfovent_mode':
+              window['handle_' + key](block, key, json.stats[key])
+              continue
+              break
+            case 'DSCZone_3_Zone_Status':
+            case 'DSCZone_6_Zone_Status':
+              window['handle_dsc_zones'](block, key, json.stats[key])
+              continue
+            case 'DSCPartition_1_Partition_Armed_Status':
+              window['handle_dsc_status'](block, key, json.stats[key])
+              continue
+              break
+          }
 
-        const mappedStats = {
-          ...json,
-          power_from_network: Number.parseFloat(
-            json.power_from_network
-          ).toFixed(2),
-          fronius_acbridge_poweractive_sum_mean_f32: Number.parseFloat(
-            json.fronius_acbridge_poweractive_sum_mean_f32
-          ).toFixed(2),
-          generated_power: Number.parseFloat(json.generated_power).toFixed(2),
-          power_to_network: Number.parseFloat(json.power_to_network).toFixed(2),
-        };
+          //get local storage data
+          objektas = getLocalStorage('data') || json.stats
 
-        for (const [key, value] of Object.entries(mappedStats)) {
-          const section = document.getElementById(key);
-          if (section && statusFunctions[key]) {
-            statusFunctions[key](section, value);
-          } else if (section) {
-            section.textContent = value;
+          block.textContent = json.stats[key]
+          if (!block.classList.contains('trend-ar')) continue
+          if (objektas[key]) {
+            const trend = block.parentNode.querySelector('.trend')
+            const isUp =
+              Number.parseFloat(json.stats[key]) >
+              Number.parseFloat(objektas[key])
+            const isDown =
+              Number.parseFloat(json.stats[key]) <
+              Number.parseFloat(objektas[key])
+
+            if (isUp || isDown) {
+              trend.classList.toggle('up', isUp)
+              trend.classList.toggle('down', isDown)
+            }
           }
         }
+
+        // set localstorage data
+        setLocalStorage('data', json.stats)
       })
 
       .catch((error) => {
-        console.error("Error:", error);
-      });
+        console.error('Error:', error)
+      })
   }
-});
+})

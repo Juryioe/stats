@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap");
 @mixin item_box {
   display: flex;
+  justify-content: center;
   background-color: #161d26e0;
   border-radius: 10px;
   padding: 10px;
@@ -14,6 +15,21 @@ body {
   font-family: "Roboto", sans-serif;
   background-color: #101720;
 }
+
+.trend {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 9px;
+  height: 9px;
+}
+.up {
+  background-image: url(icons/up.png);
+}
+.down {
+  background-image: url(icons/down.png);
+}
+
 .time {
   @include item_box;
   color: rgb(226, 225, 225);
@@ -46,16 +62,18 @@ body {
   font-weight: 400;
   font-size: 0.8rem;
   color: rgb(172, 172, 172);
+  .header_icon_text {
+    display: flex;
+    gap: 4px;
+  }
   .header_icon {
     img {
       width: 30px;
-      // margin-top: 7px;
     }
   }
   .header_item {
     @include item_box;
     width: 85px;
-    height: 75px;
     gap: 5px;
     flex-direction: column;
     align-items: center;
@@ -70,9 +88,8 @@ body {
   gap: 12px;
   .main_item {
     @include item_box;
-    width: 100%;
-    // max-width: 190px;
-    height: 80px;
+    max-width: 190px;
+    height: 60px;
     flex-direction: column;
     align-items: center;
     .title {
@@ -84,24 +101,10 @@ body {
     .status {
       display: flex;
       gap: 4px;
-      justify-content: center;
       margin-top: 10px;
       color: rgb(172, 172, 172);
       font-size: 1rem;
       align-items: center;
-      .trend {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        width: 9px;
-        height: 9px;
-      }
-      .up {
-        background-image: url(up.png);
-      }
-      .down {
-        background-image: url(down.png);
-      }
     }
   }
 }
